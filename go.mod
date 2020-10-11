@@ -1,1 +1,3 @@
-module "TbORM"
+module TbORM
+
+go 1.14
