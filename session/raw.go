@@ -48,13 +48,13 @@ func (s *Session) Exec() (result sql.Result, err error) {
 func (s *Session) QueryRow() *sql.Row {
 	defer s.Clear()
 	log.Info(s.sql.String(), s.sqlValues)
-	return s.DB().QueryRow(s.sql.String(), s.sqlValues)
+	return s.DB().QueryRow(s.sql.String(), s.sqlValues...)
 }
 
 func (s *Session) Query() (rows *sql.Rows,err error) {
 	defer s.Clear()
 	log.Info(s.sql.String(), s.sqlValues)
-	if rows, err = s.DB().Query(s.sql.String(), s.sqlValues); err != nil {
+	if rows, err = s.DB().Query(s.sql.String(), s.sqlValues...); err != nil {
 		log.Error(err)
 	}
 	return
