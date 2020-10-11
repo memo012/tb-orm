@@ -1,9 +1,9 @@
 package tborm
 
 import (
-	"TbORM/log"
-	"TbORM/session"
 	"database/sql"
+	"tborm/log"
+	"tborm/session"
 )
 
 type Engine struct {

@@ -1,4 +1,4 @@
-module TbORM
+module tborm
 
 go 1.14
 

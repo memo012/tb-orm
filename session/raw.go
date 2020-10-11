@@ -1,10 +1,10 @@
 package session
 
 import (
-	"TbORM/log"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"strings"
+	"tborm/log"
 )
 
 type Session struct {
