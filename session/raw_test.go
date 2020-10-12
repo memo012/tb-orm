@@ -2,7 +2,11 @@ package session
 
 import (
 	"database/sql"
+	"fmt"
+	"math/rand"
 	"os"
+	"strconv"
+	"tborm/dialect"
 	"testing"
 )
 
@@ -15,8 +19,10 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+var TestDial, _ = dialect.GetDialect("mysql")
+
 func NewSession() *Session {
-	return New(db)
+	return New(db, TestDial)
 }
 
 func TestSession_QueryRow(t *testing.T) {
@@ -32,7 +38,9 @@ func TestSession_QueryRow(t *testing.T) {
 
 func TestSession_Exec(t *testing.T) {
 	s := NewSession()
-	s = s.Raw("insert into web(id, visitor) values(?, ?)", "12344", 45)
+	key := rand.Intn(100)
+	fmt.Println(key)
+	s = s.Raw("insert into web(id, visitor) values(?, ?)", strconv.Itoa(key), 45)
 	_, err := s.Exec()
 	if err != nil {
 		t.Fatal("failed to insert db", err)
