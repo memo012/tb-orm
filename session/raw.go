@@ -4,10 +4,13 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"strings"
+	"tborm/clause"
 	"tborm/dialect"
 	"tborm/log"
 	"tborm/schema"
 )
+
+// session类 旨于与数据库进行交互
 
 type Session struct {
 	// 数据库引擎
@@ -16,6 +19,7 @@ type Session struct {
 	// SQL语句
 	sql strings.Builder
 	refTable *schema.Schema
+	clause   clause.Clause
 	// SQL动态参数
 	sqlValues []interface{}
 }
@@ -27,6 +31,7 @@ func New(db *sql.DB, dialect dialect.Dialect) *Session {
 func (s *Session) Clear() {
 	s.sql.Reset()
 	s.sqlValues = nil
+	s.clause = clause.Clause{}
 }
 
 func (s *Session) DB() *sql.DB {
