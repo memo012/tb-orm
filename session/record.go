@@ -30,19 +30,26 @@ func (s *Session) Insert(values ...interface{}) (int64, error) {
 //4）调用 rows.Scan() 将该行记录每一列的值依次赋值给 values 中的每一个字段
 //5）将 dest 添加到切片 destSlice 中 循环直到所有的记录都添加到切片 destSlice 中
 func (s *Session) Find(values interface{}) error {
+	// 判断是否为指针类型
 	destSlice := reflect.Indirect(reflect.ValueOf(values))
+	// 获取指针指向的元素信息
 	destType := destSlice.Type().Elem()
+	// 将结构体和数据库表进行映射
 	table := s.Model(reflect.New(destType).Type().Elem()).RefTable()
 
+	// 组装SQL语句
 	s.clause.Set(clause.SELECT, table.Name, table.FieldNames)
 	sql, vars := s.clause.Build(clause.SELECT, clause.WHERE, clause.ORDERBY, clause.LIMIT)
+	// 进行与数据库交互
 	rows, err := s.Raw(sql, vars...).Query()
 	if err != nil {
 		return err
 	}
 
 	for rows.Next() {
+		// 获取指针指向的元素信息
 		dest := reflect.New(destType).Elem()
+		// 结构体字段
 		var values []interface{}
 		for _, name := range table.FieldNames {
 			values = append(values, dest.FieldByName(name).Addr().Interface())
