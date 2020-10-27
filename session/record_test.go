@@ -11,10 +11,10 @@ var (
 func testRecordInit(t *testing.T) *Session {
 	t.Helper()
 	s := NewSession()
-	_, err := s.Insert(u1, u2)
-	if err != nil {
-		t.Fatal(err)
-	}
+	//_, err := s.Insert(u1, u2)
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
 	return s
 }
 
