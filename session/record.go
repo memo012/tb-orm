@@ -113,7 +113,6 @@ func (s *Session) Where(desc string, args ...interface{}) *Session {
 	return s
 }
 
-
 func (s *Session) OrderBy(desc string) *Session {
 	s.clause.Set(clause.ORDERBY, desc)
 	return s
