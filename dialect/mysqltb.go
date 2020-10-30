@@ -6,21 +6,21 @@ import (
 	"time"
 )
 
-type mysql struct{}
+type mysqltb struct{}
 
-var _ Dialect = (*mysql)(nil)
+var _ Dialect = (*mysqltb)(nil)
 
 func init() {
-	RegisterDialect("mysql", &mysql{})
+	RegisterDialect("mysql", &mysqltb{})
 }
 
 // go数据类型与MySQL数据库类型转换
-func (m *mysql) DataTypeOf(typ reflect.Value) string {
+func (m *mysqltb) DataTypeOf(typ reflect.Value) string {
 	switch typ.Kind() {
 	case reflect.Bool:
 		return "bool"
 	case reflect.Int, reflect.Int32, reflect.Uint, reflect.Uint32:
-		return "int"
+		return "int(11)"
 	case reflect.Int8, reflect.Uint8:
 		return "TINYINT"
 	case reflect.Int16, reflect.Uint16:
@@ -41,7 +41,7 @@ func (m *mysql) DataTypeOf(typ reflect.Value) string {
 	panic(fmt.Sprintf("invalid sql type %s (%s)", typ.Type().Name(), typ.Kind()))
 }
 
-func (m *mysql) TableExitSQL(tableName string) (string, []interface{}) {
+func (m *mysqltb) TableExitSQL(tableName string) (string, []interface{}) {
 	args := []interface{}{tableName}
 	return "SELECT name FROM sqlite_master WHERE type='table' and name = ?", args
 }

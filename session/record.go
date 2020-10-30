@@ -31,6 +31,7 @@ func (s *Session) Insert(values ...interface{}) (int64, error) {
 //4）调用 rows.Scan() 将该行记录每一列的值依次赋值给 values 中的每一个字段
 //5）将 dest 添加到切片 destSlice 中 循环直到所有的记录都添加到切片 destSlice 中
 func (s *Session) Find(values interface{}) error {
+	s.CallMethod(BeforeInsert, nil)
 	// 判断是否为指针类型
 	destSlice := reflect.Indirect(reflect.ValueOf(values))
 	// 获取指针指向的元素信息
@@ -47,6 +48,7 @@ func (s *Session) Find(values interface{}) error {
 		return err
 	}
 
+
 	for rows.Next() {
 		// 获取指针指向的元素信息
 		dest := reflect.New(destType).Elem()
@@ -58,6 +60,8 @@ func (s *Session) Find(values interface{}) error {
 		if err := rows.Scan(values...); err != nil {
 			return err
 		}
+		// 钩子函数
+		s.CallMethod(AfterQuery, dest.Addr().Interface())
 		// 赋值
 		destSlice.Set(reflect.Append(destSlice, dest))
 	}

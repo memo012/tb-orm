@@ -2,12 +2,14 @@ package tborm
 
 import (
 	"database/sql"
+	"tborm/dialect"
 	"tborm/log"
 	"tborm/session"
 )
 
 type Engine struct {
 	db *sql.DB
+	dialect dialect.Dialect
 }
 
 func NewEngine(driverName, source string) (e *Engine, err error) {
@@ -25,8 +27,15 @@ func NewEngine(driverName, source string) (e *Engine, err error) {
 		return
 	}
 
-	// step3: 连接成功
-	e = &Engine{db: db}
+	// step3: 确保数据库存在
+	dial, ok := dialect.GetDialect(driverName)
+	if !ok {
+		log.Errorf("dialect %s Not Found", driverName)
+		return
+	}
+
+	// step4: 连接成功
+	e = &Engine{db: db, dialect: dial}
 	log.Info("Connect database success")
 	return
 }
@@ -39,5 +48,5 @@ func (e *Engine) Close()  {
 }
 
 func (e *Engine) NewSession() *session.Session {
-	return session.New(e.db)
+	return session.New(e.db, e.dialect)
 }
